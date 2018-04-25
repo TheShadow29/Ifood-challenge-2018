@@ -1,0 +1,8 @@
+{
+	"exp_name": "LearnLaplacian",
+	"data_dir": "/home/SharedData/Ark_git_files/btp_extra_files/ptbdata",
+	"Din": 150,
+	"batch_size": 4,
+	"num_tr_points": 300,
+	"channels": [6, 7, 8, 9, 10, 11]
+}
