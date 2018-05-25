@@ -13,8 +13,10 @@ from fastai.sgdr import *
 from fastai.plots import *
 
 PATH = "../data/"
-sz = 224
+sz = 299
 arch = resnext101_64
+# arch = resnet50
+# arch = resnext50
 bs = 64
 
 torch.cuda.is_available()
@@ -51,7 +53,7 @@ def get_data(sz, bs):
 
 data = get_data(sz, bs)
 
-learn = ConvLearner.pretrained(arch, data, precompute=True, opt_fn=optim.Adam)
+learn = ConvLearner.pretrained(arch, data, precompute=False, opt_fn=optim.Adam)
 
 # lrf = learn.lr_find()
 
@@ -60,14 +62,21 @@ learn = ConvLearner.pretrained(arch, data, precompute=True, opt_fn=optim.Adam)
 # learn.sched.plot()
 
 
+def one_to_one_map(inp_label):
+    import json
+    big_label_dict = json.load(open(f'{PATH}big_label_dict.json', 'r'))
+    return big_label_dict[inp_label]
+
+
 def accuracytop3(preds, targs):
     preds_3 = preds.sort(dim=1, descending=True)[1][:, :3]
     return ((preds_3[:, 0] == targs) + (preds_3[:, 1] == targs) +
             (preds_3[:, 2] == targs)).float().mean()
 
 
-learn.unfreeze()
-learn.load('acc_rxnet_79')
+# learn.unfreeze()
+# learn.load('acc_rxnet_79')
+# learn.load('best_rxnet_1')
 # learn.fit(0.005, 3, cycle_len=2, metrics=[accuracy, accuracytop3])
 
 # learn.fit(0.001, 2, cycle_len=2, cycle_mult=2, metrics=[accuracy, accuracytop3])
@@ -100,7 +109,7 @@ def test_acc_csv():
 
     SUBM = f'{PATH}sub/'
     os.makedirs(SUBM, exist_ok=True)
-    sub = 'id, predicted\n'
+    sub = 'id,predicted\n'
     str_format = '{},{} {} {}\n'
     ds_class_array = np.array(data.classes)
     for i in range(len(sub_ds)):
@@ -117,25 +126,28 @@ def test_acc_csv():
         f.write(sub)
 
 
-def val_conf_mtx():
-    log_preds, y = learn.TTA()
-    probs = np.exp(log_preds)
-    probs_1 = np.mean(probs, axis=0)
-    ds_class_array = np.array(data.classes)
-    cm = np.zeros((211, 211))
-    for i in range(probs_1.shape[0]):
-        actual_class = y[i]
-        r11 = probs_1[i, :]
-        r12 = -r11
-        r2 = np.argsort(r12)
-        r3 = ds_class_array[r2]
-        pred_val_fin = np.array(r3[:3], dtype=np.int_)
-        if np.any(pred_val_fin == actual_class):
-            cm[actual_class, actual_class] += 1
-        else:
-            cm[actual_class, pred_val_fin[0]] += 1
+# def val_conf_mtx():
+# log_preds, y = learn.TTA()
+# probs = np.exp(log_preds)
+# probs_1 = np.mean(probs, axis=0)
+# ds_class_array = np.array(data.classes)
+# pred_validations = np.zeros((probs_1.shape[0], 3))
+# cm = np.zeros((211, 211))
+# actual_classes = valid_label_df[1]
+# for i in range(probs_1.shape[0]):
+#     actual_class = actual_classes[i]
+#     r11 = probs_1[i, :]
+#     r12 = -r11
+#     r2 = np.argsort(r12)
+#     r3 = ds_class_array[r2]
+#     pred_val_fin = np.array(r3[:3], dtype=np.int_)
+#     pred_validations[i, :] = pred_val_fin
+#     if np.any(pred_val_fin == actual_class):
+#         cm[actual_class, actual_class] += 1
+#     else:
+#         cm[actual_class, pred_val_fin[0]] += 1
 
-    return cm
+# return cm
 
 
 # In[77]:
