@@ -45,7 +45,7 @@ val_idxs = np.arange(len(train_label_df), len(train2_label_df))
 
 def get_data(sz, bs):
     tfms = tfms_from_model(arch, sz, aug_tfms=transforms_top_down, max_zoom=1.1)
-    data = ImageClassifierData.from_csv(PATH, 'train_all', f'{PATH}train4_info.csv',
+    data = ImageClassifierData.from_csv(PATH, 'train_all_compressed', f'{PATH}train4_info.csv',
                                         test_name='test_set', val_idxs=val_idxs,
                                         tfms=tfms, bs=bs, skip_header=False)
     return data
