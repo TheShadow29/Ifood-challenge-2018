@@ -16,10 +16,11 @@ from fastai.plots import *
 
 PATH = "../data/"
 sz = 299
-arch = inception_4
+arch = resnext101_64
+# arch = inception_4
 # arch = resnet50
 # arch = resnext50
-bs = 64
+bs = 32
 
 torch.cuda.is_available()
 
@@ -46,10 +47,10 @@ val_idxs = np.arange(len(train_label_df), len(train2_label_df))
 
 
 def get_data(sz, bs):
-#     tfms = tfms_from_model(arch, sz, aug_tfms=transforms_top_down, max_zoom=1.1)
+    # tfms = tfms_from_model(arch, sz, aug_tfms=transforms_top_down, max_zoom=1.1) # -
     tfms = tfms_from_model(arch, sz, max_zoom=1.1)
     data = ImageClassifierData.from_csv(PATH, 'train_all', f'{PATH}train4_info.csv',
-                                        test_name=None, val_idxs=val_idxs,
+                                        test_name='test_set', val_idxs=val_idxs,
                                         tfms=tfms, bs=bs, skip_header=False)
     return data
 
@@ -70,13 +71,18 @@ def one_to_one_map(inp_label):
     big_label_dict = json.load(open(f'{PATH}big_label_dict.json', 'r'))
     return big_label_dict[inp_label]
 
+# def accuracytop3(preds, targs):
+# #     pdb.set_trace()
+#     preds1 = torch.Tensor(preds)
+#     targs1 = torch.LongTensor(targs)
+#     preds_3 = preds1.sort(dim=1, descending=True)[1][:, :3]
+#     return ((preds_3[:, 0] == targs1) + (preds_3[:, 1] == targs1) +
+#             (preds_3[:, 2] == targs1)).float().mean()
+
 def accuracytop3(preds, targs):
-#     pdb.set_trace()
-    preds1 = torch.Tensor(preds)
-    targs1 = torch.LongTensor(targs)
-    preds_3 = preds1.sort(dim=1, descending=True)[1][:, :3]
-    return ((preds_3[:, 0] == targs1) + (preds_3[:, 1] == targs1) +
-            (preds_3[:, 2] == targs1)).float().mean()
+    preds_3 = preds.sort(dim=1, descending=True)[1][:, :3]
+    return ((preds_3[:, 0] == targs) + (preds_3[:, 1] == targs) +
+            (preds_3[:, 2] == targs)).float().mean()
 
 # def accuracytop3(preds, targs):
 #     preds_3 = preds.sort(dim=1, descending=True)[1][:, :3]
