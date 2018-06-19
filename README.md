@@ -1,5 +1,5 @@
 # Ifood-challenge-18
-Trying the INaturalist Challenge 2018
+Trying the Ifood Challenge 2018
 ### Links:
 + Competition Link: https://www.kaggle.com/c/ifood2018/
 + Data Link: https://github.com/karansikka1/Foodx/blob/master/README.md#data-download-and-format
