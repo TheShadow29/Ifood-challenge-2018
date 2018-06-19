@@ -23,3 +23,6 @@ All the trained models can be found here: https://tinyurl.com/ifood-best-models.
 
 ## Data structure:
 Inside the `data` folder, append all the validation images to the training set and use corresponding validation indices which correspond to the validation files. Test can be kept untouched.
+
+## Training:
+We initially tried only fine tuning methods. Unfortunately that only got us to maximum of 78.5% on validation and 77% on test. We then tried a uniform learning rate of 1e-2 and used simple cosine annnealing schedule for 10 epochs and later 15 epochs and sometimes 20 epochs for larger models. We consistently found 15 epochs gave good results. Also, models that had multiple restarts were better however the performance improvement on ensembling them is minor, so we tried to train different models from scratch which was able to give more accuracy on validation.
