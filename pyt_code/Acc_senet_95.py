@@ -71,6 +71,4 @@ md3 = new_senet(md,211)
 learn = ConvLearner.from_model_data(md3, data)
 learn.unfreeze()
 
-learn.fit(1e-2,1,cycle_len=30, best_save_name='se_resnext101_512h',metrics=[accuracy, accuracytop3])
-
-
+# learn.fit(1e-2,1,cycle_len=30, best_save_name='se_resnext101_512h',metrics=[accuracy, accuracytop3])

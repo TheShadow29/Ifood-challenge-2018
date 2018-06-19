@@ -1,5 +1,5 @@
 import sys
-sys.path.append("/home/paperspace/fastai/")
+sys.path.append("/scratch/arka/miniconda3/external/fastai/")
 import matplotlib
 matplotlib.use('Agg')
 
@@ -14,21 +14,18 @@ from fastai.dataset import *
 from fastai.sgdr import *
 from fastai.plots import *
 
-PATH = "../data/"
+# PATH = "../data/"
+PATH = "/scratch/arka/Ark_git_files/iFood/"
 sz = 299
-arch = resnext101_64
-# arch = inception_4
+# arch = resnext101_64
+arch = inception_4
 # arch = resnet50
 # arch = resnext50
-bs = 32
+bs = 48
 
 torch.cuda.is_available()
 
 torch.backends.cudnn.enabled
-
-files = os.listdir(f'{PATH}train_all/')
-files.sort()
-files[-5:-1]
 
 train_label_csv = f'{PATH}train3_info.csv'
 train2_label_csv = f'{PATH}train4_info.csv'
